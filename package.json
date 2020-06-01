@@ -1,0 +1,53 @@
+{
+  "name": "memory",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://rabekototsiresy.github.io/Bmarketing",
+  "dependencies": {
+    "@material-ui/core": "^4.9.12",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.51",
+    "address": "^1.1.2",
+    "axios": "^0.19.2",
+    "cra-template": "1.0.3",
+    "detector": "^2.5.0",
+    "firebase": "^7.14.1",
+    "gh-pages": "^2.2.0",
+    "jquery": "^3.5.1",
+    "js.device.detector": "^1.0.3",
+    "public-ip": "^4.0.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-full-screen": "^0.2.4",
+    "react-icons": "^3.10.0",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.4.1",
+    "react-stepper-horizontal": "^1.0.11",
+    "react-toastify": "^5.5.0",
+    "react-tooltip": "^4.2.5",
+    "sweetalert": "^2.1.2",
+    "uuid": "^8.0.0"
+  },
+  "scripts": {
+    "deploy": "npm run build&&gh-pages -d build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
