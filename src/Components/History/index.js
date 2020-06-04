@@ -134,7 +134,7 @@ useEffect( ()=>{
   // ]
   const displayHistoriques =  rows.length !== 0 ? rows.map((row, index) => (
     <Row key={index} row={row} />
-  )) : <Typography component="span" variant="h6">Veuillez patienter</Typography>
+  )) : <Typography component="span" variant="h6">Historique non disponible</Typography>
   const displayPaginnation = paginnationNumber !== null ?   <Pagination count={Math.trunc(paginnationNumber/10) == 0 ? 1 : Math.trunc(paginnationNumber/10)} color="primary" style={{position: 'fixed',bottom: '20px'}} /> : <span>Chargement</span>
 
 

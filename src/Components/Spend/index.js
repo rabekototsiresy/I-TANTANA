@@ -29,8 +29,6 @@ const Spend = (props) => {
   
   const [date, setDate] = useState(null)
   const [salaire, setSalaire] = useState(null)
-  const [lastSpend, setLastSpend] = useState([])
-  const [cpInfo, setCpInfo] = useState([])
   const firebase = useContext(FirebaseContext)
 
   useEffect( ()=>{
@@ -50,25 +48,7 @@ const Spend = (props) => {
   .catch( err=>{
     console.log(err)
   })
-
-
-  firebase.getHistory()
-  .then((collection) => {
-    if (collection) {
-      let tabTemp = []
-      collection.docs.map(doc => tabTemp.push(doc.data()))
-        
-        setLastSpend(tabTemp)
-    
-    } else {
-      console.log("EMPTY COLLECTION")
-    }
-  })
-  .catch( err=>{
-    console.log(err)
-  })
-
-  },[salaire,lastSpend])
+  },[salaire])
   const handleMotif = (index, e) => {
     const values = [...fields]
     values[index].motif = e.target.value
@@ -121,75 +101,78 @@ const Spend = (props) => {
     let s = 60 - today.getSeconds() 
     return parseInt(h)+parseInt(min)+parseInt(s)
   }
-
-  const handleCp = ()=>{
-
-    setLastSpend(null)
-  }
   
   function handleSubmit(e) {
-   
     e.preventDefault()
     // document.cookie=`totalSpend=${somme()}`
-    setLastSpend()
-    console.log(lastSpend)
-    console.log(fields)
-    console.log(lastSpend)
-
-//     if( parseInt(salaire.salary) - parseInt(somme())>=0){
-//       firebase.updateSalary(parseInt(salaire.salary) - parseInt(somme()))
-//       .then( doc=>{
+  
+    if( parseInt(salaire.salary) - parseInt(somme())>=0){
+      firebase.updateSalary(parseInt(salaire.salary) - parseInt(somme()))
+      .then( doc=>{
       
-//         console.log("updated succeful")
-//       })
-//       .catch( err=>{
-//         console.log(err)
-//       })
-// //console.log(object)
-//       if(getCookie('spandToday') == null &&  getCookie('spendTodayId') == null){
-        
-//         firebase.addSpend( date,fields)
-//         .then( doc=>{
-//           document.cookie = `spendToday=true;max-age=${getSeconde()}`
-//           document.cookie=`spendTodayId=${doc.id};max-age=${getSeconde()}`
-//           swal({
-//             title: "Opération éfféctué!",
-//             text: "cliquez le bouton pour continuer",
-//             icon: "success",
-//             button: "ok!",
-//           });
-//           props.history.push('/rest')
+        console.log("updated succeful")
+      })
+      .catch( err=>{
+        console.log(err)
+      })
+
+      firebase.addSpend( date,fields)
+      .then( doc=>{getSeconde()
+        document.cookie = `spendToday=true;max-age=${getSeconde()}`
+        document.cookie=`spendTodayId=${doc.id};max-age=${getSeconde()}`
+        swal({
+          title: "Opération éfféctué!",
+          text: "cliquez le bouton pour continuer",
+          icon: "success",
+          button: "ok!",
+        });
+        props.history.push('/rest')
+  
+        console.log("added succeful")
+      })
+      .catch( err=>{
+        console.log(err)
+      })
+    }else{
+      swal({
+        title: "Solde insuffisant!!",
+        text: "cliquez le bouton pour revenir en arrière",
+        icon: "warning",
+        button: "ok!",
+      });
+      
+    }
     
-//           console.log("added succeful")
-//         })
-//         .catch( err=>{
-//           console.log(err)
-//         })
-//       }else{
-//         alert('mis a jout')
-
-//         firebase.updateSpendToday(date,fields,getCookie('spendTodayId'))
-//         .then( doc=>{
-//           props.history.push('/rest')
-//             console.log("updated succeful")
-//         })
-//         .catch( err=>{
-//           console.log(err)
-//         })
-//       }
-      
-//     }else{
-//       swal({
-//         title: "Solde insuffisant!!",
-//         text: "cliquez le bouton pour revenir en arrière",
-//         icon: "warning",
-//         button: "ok!",
-//       });
-      
-//     }
+    // if(getCookie('spandToday') !=='undefined' &&  getCookie('spendTodayId') !=='undefined'){
+    //   alert("Mis a joour depense")
+    //   firebase.updateSpendToday(date,fields,getCookie('spendTodayId'))
+    //   .then( doc=>{
+    //     props.history.push('/rest')
+    //       console.log("updated succeful")
+    //   })
+    //   .catch( err=>{
+    //     console.log(err)
+    //   })
 
 
+    // }else{
+    //   alert("AJOUT NOUVEAU DEPENSE")
+    //   firebase.addSpend( date,fields)
+    //   .then( doc=>{getSeconde()
+    //     document.cookie = `spendToday=true;max-age=${getSeconde()}`
+    //     document.cookie=`spendTodayId=${doc.id};max-age=${getSeconde()}`
+    //     props.history.push('/rest')
+  
+    //     console.log("added succeful")
+    //   })
+    //   .catch( err=>{
+    //     console.log(err)
+    //   })
+    // }
 
+
+
+    
   }
 const displaySalary = salaire !== null ? salaire.salary : '.......'
 
