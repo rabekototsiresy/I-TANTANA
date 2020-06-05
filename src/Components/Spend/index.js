@@ -29,10 +29,30 @@ const Spend = (props) => {
   
   const [date, setDate] = useState(null)
   const [salaire, setSalaire] = useState(null)
+  const [spendToday, setSpendToday] = useState([])
   const firebase = useContext(FirebaseContext)
 
   useEffect( ()=>{
+  
+   if(!(getCookie('spendTodayId') == null)){
+    // console.log("Mis a jour, get last spen in db")
+    // console.log(getCookie('spendTodayId'))
+     firebase.getSpend(getCookie('spendTodayId'))
+     .then( collection=>{
+      if(collection){
+        setSpendToday(collection.data().totalSpend)
+    
+      }else {
+        console.log("collectio vide")
+      }
+    })
+    .catch( err=>{
+      console.log(err)
+    })
+   }
    
+
+
     getSeconde()
     let today = new Date()
     setDate(`${today.getDate()}/${today.getMonth()}/${today.getFullYear()}`)
@@ -106,33 +126,71 @@ const Spend = (props) => {
     e.preventDefault()
     // document.cookie=`totalSpend=${somme()}`
   
+
+   
     if( parseInt(salaire.salary) - parseInt(somme())>=0){
       firebase.updateSalary(parseInt(salaire.salary) - parseInt(somme()))
       .then( doc=>{
       
-        console.log("updated succeful")
+        // console.log("updated succeful")
       })
       .catch( err=>{
         console.log(err)
       })
 
-      firebase.addSpend( date,fields)
-      .then( doc=>{getSeconde()
-        document.cookie = `spendToday=true;max-age=${getSeconde()}`
-        document.cookie=`spendTodayId=${doc.id};max-age=${getSeconde()}`
-        swal({
-          title: "Opération éfféctué!",
-          text: "cliquez le bouton pour continuer",
-          icon: "success",
-          button: "ok!",
-        });
-        props.history.push('/rest')
-  
-        console.log("added succeful")
-      })
-      .catch( err=>{
-        console.log(err)
-      })
+      
+
+
+
+if(getCookie('spendToday') == null && getCookie('spendTodayId') == null){
+  console.log("AJOUT NOUVEAU DEPENS")
+  firebase.addSpend( date,fields)
+  .then( doc=>{getSeconde()
+    document.cookie = `spendToday=true;max-age=${getSeconde()}`
+    document.cookie=`spendTodayId=${doc.id};max-age=${getSeconde()}`
+    swal({
+      title: "Opération éfféctué!",
+      text: "cliquez le bouton pour continuer",
+      icon: "success",
+      button: "ok!",
+    });
+    props.history.push('/rest')
+
+    console.log("added succeful")
+  })
+  .catch( err=>{
+    console.log(err)
+  })
+}else{
+
+  console.log(spendToday) 
+  console.log(fields)
+  const mixedResponse = [...spendToday,...fields]
+
+  firebase.updateSpendToday(mixedResponse,getCookie('spendTodayId'))
+  .then(succ=>{
+
+    swal({
+      title: "Opération éfféctué!",
+      text: "cliquez le bouton pour continuer",
+      icon: "success",
+      button: "ok!",
+    });
+    props.history.push('/rest')
+  })
+  .catch( err=>{
+    console.log(err)
+  })
+}
+
+
+
+
+
+
+
+
+
     }else{
       swal({
         title: "Solde insuffisant!!",

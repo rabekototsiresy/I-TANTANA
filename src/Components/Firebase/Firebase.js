@@ -24,12 +24,9 @@ class Firebase {
     })
   }
 
-  updateSpendToday = (date,totalSpend,id)=>{
-    return this.db.collection('Spend').add({
-      date: date,
-      totalSpend: [...totalSpend,{date: date,totalSpend: totalSpend}]
-
-      
+  updateSpendToday = (totalSpend,id)=>{
+    return this.db.collection('Spend').doc(id).update({
+      totalSpend: totalSpend
     })
   }
 
@@ -51,6 +48,10 @@ class Firebase {
 
   getHistory = ()=>{
     return this.db.collection('Spend').get()
+  }
+
+  getSpend = (id)=>{
+    return this.db.collection('Spend').doc(id).get()
   }
 }
 
