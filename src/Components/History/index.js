@@ -1,4 +1,4 @@
-import React,{useEffect,useState,useContext} from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -18,7 +18,7 @@ import Container from '@material-ui/core/Container'
 import { Grid, Divider, Button } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import { Link } from 'react-router-dom'
-import {FirebaseContext} from './../Firebase'
+import { FirebaseContext } from './../Firebase'
 
 
 const useRowStyles = makeStyles({
@@ -29,6 +29,23 @@ const useRowStyles = makeStyles({
   },
 });
 
+
+const style = {
+  span: {
+    padding: '10px 15px',
+    border: '1px solid black',
+    borderRadius: '5px',
+    background: 'darkcyan',
+    color: 'white'
+  }, div: {
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'center',
+    flexDirection: 'row'
+
+  }
+
+}
 function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
@@ -85,38 +102,39 @@ function Row(props) {
 
 export default function History(props) {
 
-const [rows, setRow] = useState([])
-const firebase = useContext(FirebaseContext)
-const [paginnationNumber, setPaginnationNumber] = useState(null)
-const [hitoryTab, setHitoryTab] = useState([])
-const [pageDisplay, setPageDisplay] = useState([])
+  const [rows, setRow] = useState([])
+  const firebase = useContext(FirebaseContext)
+  const [paginnationNumber, setPaginnationNumber] = useState(null)
+  const [hitoryTab, setHitoryTab] = useState([])
+  const [pageDisplay, setPageDisplay] = useState([])
+  const [displayPagination, setDisplayPagination] = useState('')
 
-useEffect( ()=>{
-  console.log(props.match.params)
-  let  page = parseInt(props.match.params.page)
-  firebase.getHistory()
-  .then((collection) => {
-    if (collection) {
-      let tabTemp = []
-      collection.docs.map(doc => tabTemp.push(doc.data()))
-        // setRow(tabTemp)
-      
-        setPaginnationNumber(tabTemp.length)
-       
-        
-        setRow(tabTemp.slice((page-1)*10,page*10))
-      //     setPageDisplay()
-      //  console.log(pageDisplay)
-        
-       
-    } else {
-      console.log("EMPTY COLLECTION")
-    }
-  })
-  .catch( err=>{
-    console.log(err)
-  })
-},[rows,pageDisplay])
+  useEffect(() => {
+   
+    let page = parseInt(props.match.params.page)
+    firebase.getHistory()
+      .then((collection) => {
+        if (collection) {
+          let tabTemp = []
+          collection.docs.map(doc => tabTemp.push(doc.data()))
+          // setRow(tabTemp)
+
+          setPaginnationNumber(tabTemp.length)
+
+console.log("nombre donne total" + paginnationNumber)
+          setRow(tabTemp.slice((page - 1) * 5, page * 5))
+          //     setPageDisplay()
+          //  console.log(pageDisplay)
+
+
+        } else {
+          console.log("EMPTY COLLECTION")
+        }
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }, [rows, pageDisplay])
   // const rows = [
   //   {
   //     date: '12/01/2020',
@@ -130,17 +148,58 @@ useEffect( ()=>{
   //     date: '12/01/2020',
   //     history: [{ motif: 'Menakey', price: '2000' }, { motif: 'Café', price: '300' }]
   //   },
-  
+
   // ]
-  const displayHistoriques =  rows.length !== 0 ? rows.map((row, index) => (
+  const displayHistoriques = rows.length !== 0 ? rows.map((row, index) => (
     <Row key={index} row={row} />
   )) : <Typography component="span" variant="h6">Historique non disponible</Typography>
-  const displayPaginnation = paginnationNumber !== null ?   <Pagination count={Math.trunc(paginnationNumber/10) == 0 ? 1 : Math.trunc(paginnationNumber/10)} color="primary" style={{position: 'fixed',bottom: '20px'}} /> : <span>Chargement</span>
 
 
+  const displayPaginnation = paginnationNumber !== null ? (
 
+    rows.map((val, index) => {
+
+
+      return (<Link to={`/history/${index + 1}`}>
+        <span style={style.span}>1</span>
+      </Link>)
+
+    })
+  ) : <span>Chargement</span>
+
+
+  {/* <Pagination count={Math.trunc(paginnationNumber/10) == 0 ? 1 : Math.trunc(paginnationNumber/10)} color="primary" style={{position: 'fixed',bottom: '20px'}} />
+ */}
+
+
+  const disp = () => {
+    const nb = paginnationNumber % 10
+    if (nb == 0) {
+      let tabTemp = []
+      for (let i = 1; i < (paginnationNumber / 5 )+ 1; i++) {
+        tabTemp.push(
+          <Link to={`/history/${i}`} >
+            <span style={style.span}>{i}</span>
+          </Link>
+        )
+      }
+      return tabTemp
+    } else {
+      let tabTemp = []
+      for (let i = 1; i < (paginnationNumber / 5) + 1; i++) {
+        tabTemp.push(
+          <Link to={`/history/${i}`} style={{textDecoration: 'none'}}>
+            <span style={style.span}>{i }</span>
+          </Link>
+        )
+      }
+      return tabTemp
+    }
+  }
+
+  const numPage = props.match.params.page && props.match.params.page
   return (
-  
+
     <Container style={{ marginTop: '20px' }}>
       <Grid
         direction="column"
@@ -153,12 +212,12 @@ useEffect( ()=>{
           direction="row"
           justify="center"
           alignItems="center"
-        
+
         >
 
 
-          <Typography component="h5" variant="h5">HISTORIQUES</Typography>
-
+          <Typography component="h5" variant="h5" color="secondary">HISTORIQUES({numPage})</Typography>
+         
 
         </Grid>
         <Divider />
@@ -189,16 +248,24 @@ useEffect( ()=>{
 
 
         <Grid item  >
-          {displayPaginnation}
+
+          <div style={style.div}>
+            {/* {displayPaginnation} */}
+            {disp().map(val => (
+              val
+            ))}
+          </div>
+
         </Grid>
-        <Grid  style={{ textAlign: "center", marginTop: '30px' }}>
-          <Link to="/" style={{textDecoration: 'none'}}>
+        <Grid style={{ textAlign: "center", marginTop: '30px' }}>
+          <Link to="/" style={{ textDecoration: 'none' }}>
             <Button
               variant="contained"
               color="secondary">
               HOME
           </Button>
           </Link>
+
         </Grid>
       </Grid>
 

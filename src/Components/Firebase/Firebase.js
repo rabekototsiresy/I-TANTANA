@@ -2,13 +2,13 @@ import  app  from 'firebase/app'
 import firestore from 'firebase/firestore'
 
 const config = {
-  apiKey: "AIzaSyCA13XvNtae0WCo8WQhZsFaeBi1woFWqVE",
-  authDomain: "i-test-24f78.firebaseapp.com",
-  databaseURL: "https://i-test-24f78.firebaseio.com",
-  projectId: "i-test-24f78",
-  storageBucket: "i-test-24f78.appspot.com",
-  messagingSenderId: "460700484724",
-  appId: "1:460700484724:web:d618c0db78d70c3439fd21"
+apiKey: "AIzaSyAbgsCdEUHq9jj5VAsP8o-Jxgk7CIM_70g",
+authDomain: "zereo-34f23.firebaseapp.com",
+databaseURL: "https://zereo-34f23.firebaseio.com",
+projectId: "zereo-34f23",
+storageBucket: "zereo-34f23.appspot.com",
+messagingSenderId: "263369375140",
+appId: "1:263369375140:web:df47c2d2abb4cbba505531"
 };
 
 class Firebase {
@@ -38,10 +38,10 @@ class Firebase {
   }
 
   getSalary = ()=>{
-    return this.db.collection('Salary').doc('7Zbi3nMTKFXw5HJzdmBS').get()
+    return this.db.collection('Salary').doc('PvMdJhGtHTsi6rFyRO9G').get()
   }
   updateSalary = (salary)=>{
-    return this.db.collection('Salary').doc('7Zbi3nMTKFXw5HJzdmBS').update({
+    return this.db.collection('Salary').doc('PvMdJhGtHTsi6rFyRO9G').update({
       salary: salary
     })
   }
